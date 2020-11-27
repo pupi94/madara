@@ -1,0 +1,125 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/wrappers.proto";
+import "common.proto";
+
+option go_package = ".;pb";
+
+message Option {
+  // @inject_tag: binding:"required,option_name"
+  string name = 1;
+  // @inject_tag: binding:"required,option_values"
+  repeated string values = 2;
+}
+
+message Image {
+  string src = 1;
+  string alt = 2;
+  int32 width = 3;
+  int32 height = 4;
+}
+
+// 创建商品
+message CreateProductRequest {
+  // @inject_tag: binding:"required,product_title"
+  string title = 1;
+  string description = 3;
+  bool published = 4;
+  StringList tags = 7;
+  // @inject_tag: binding:"product_spu"
+  string spu = 20;
+  // @inject_tag: binding:"product_fake_sales"
+
+  repeated Option options = 24;
+  repeated Image images = 25;
+
+  message variant {
+    string option1 = 1;
+    string option2 = 2;
+    string option3 = 3;
+    // @inject_tag: binding:"variant_price"
+    double price = 4;
+    // @inject_tag: binding:"variant_inventory_quantity"
+    int64 inventory_quantity = 5;
+  }
+  // @inject_tag: binding:"dive"
+  repeated variant variants = 26;
+}
+
+// 更新商品
+message UpdateProductRequest {
+  // @inject_tag: binding:"required"
+  string id = 1;
+  // @inject_tag: binding:"omitempty,product_title"
+  google.protobuf.StringValue title = 2;
+  google.protobuf.StringValue description = 3;
+  google.protobuf.BoolValue published = 4;
+  StringList tags = 5;
+  // @inject_tag: binding:"omitempty,product_spu"
+  google.protobuf.StringValue spu = 6;
+  repeated Option options = 7;
+
+  // @inject_tag: binding:"dive"
+  repeated Image images = 8;
+
+  message variant {
+    // @inject_tag: binding:"omitempty,uuid"
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue option1 = 2;
+    google.protobuf.StringValue option2 = 3;
+    google.protobuf.StringValue option3 = 4;
+    // @inject_tag: binding:"omitempty,variant_price"
+    google.protobuf.DoubleValue price = 5;
+    // @inject_tag: binding:"omitempty,variant_inventory_quantity"
+    google.protobuf.Int64Value inventory_quantity = 6;
+}
+  // @inject_tag: binding:"dive"
+  repeated variant variants = 9;
+}
+
+message DeleteProductRequest {
+  string id=1;
+}
+
+message ProductResponse {
+  string id = 1;
+  string title = 2;
+  string description = 4;
+  string published_at = 5;
+  repeated string tags = 8;
+  double price_min = 14;
+  double price_max = 15;
+  string spu = 23;
+  string created_at = 25;
+  string updated_at = 26;
+  bool published = 28;
+  repeated Option options = 33;
+  repeated Image images = 34;
+
+  message variant {
+    string id = 1;
+    string product_id = 2;
+    int64 position = 5;
+    string option1 = 6;
+    string option2 = 7;
+    string option3 = 8;
+    double price = 14;
+    string created_at = 17;
+    string updated_at = 18;
+  }
+  repeated variant variants = 35;
+}
+
+message GetProductRequest {
+}
+
+// 获取商品列表
+message ListProductRequest {
+  int64 page=1;
+  int64 per_page=2;
+}
+message ListProductResponse {
+  int64 count=1;
+  repeated ProductResponse products=2;
+}

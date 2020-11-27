@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package v1;
+
+import "product.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = ".;pb";
+
+service ProductService {
+  rpc CreateProduct(CreateProductRequest) returns (ProductResponse){}
+  rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse){}
+  rpc GetProduct(GetProductRequest) returns (ProductResponse){}
+  rpc ListProduct(ListProductRequest) returns (ListProductResponse){}
+  rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty){}
+}
