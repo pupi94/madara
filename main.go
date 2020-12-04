@@ -1,8 +1,8 @@
-package cmd
+package main
 
 import (
 	"context"
-	"github.com/pupi94/madara/cmd/grpc"
+	"github.com/pupi94/madara/cmd"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -17,7 +17,7 @@ func main() {
 		Name: "grpc",
 		Usage: "Start grpc service",
 		Action: func(c *cli.Context) error {
-			_ = grpc.StartGrpcServer(ctx)
+			cmd.StartGrpcServer(ctx)
 			return nil
 		},
 	}

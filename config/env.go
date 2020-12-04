@@ -4,7 +4,7 @@ import (
 	"github.com/caarlos0/env/v6"
 )
 
-type config struct {
+type Environment struct {
 	GrpcPort     int      `env:"GrpcPort" envDefault:"3000"`
 	DBHostname   string   `env:"DB_HOSTNAME" envDefault:"127.0.0.1"`
 	DBPort       int      `env:"DB_PORT" envDefault:"3306"`
@@ -13,11 +13,11 @@ type config struct {
 	DBDatabase   string   `env:"DB_DATABASE" envDefault:"product_development"`
 }
 
-var Env *config
+var Env *Environment
 
 func init() {
-	Env := config{}
-	if err := env.Parse(&Env); err != nil {
+	Env = &Environment{}
+	if err := env.Parse(Env); err != nil {
 		panic(err)
 	}
 }

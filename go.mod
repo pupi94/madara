@@ -3,7 +3,7 @@ module github.com/pupi94/madara
 go 1.14
 
 require (
-	github.com/caarlos0/env/v6 v6.4.0 // indirect
+	github.com/caarlos0/env/v6 v6.4.0
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/sirupsen/logrus v1.7.0
