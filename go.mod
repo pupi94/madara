@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/caarlos0/env/v6 v6.4.0
-	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/sirupsen/logrus v1.7.0
@@ -15,4 +15,5 @@ require (
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4 // indirect
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
+	xorm.io/xorm v1.0.5
 )
