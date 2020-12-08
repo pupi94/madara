@@ -6,19 +6,20 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type KafkaProducer struct {
+type Producer struct {
 	producer sarama.SyncProducer
 	//producer  sarama.AsyncProducer
 	failTimes int32
 }
 
-func NewKafkaProducer(ctx context.Context, hosts []string) (*KafkaProducer, error) {
-	var kp = new(KafkaProducer)
+func NewProducer(ctx context.Context, hosts []string) (*Producer, error) {
+	var kp = new(Producer)
 
 	cfg := sarama.NewConfig()
 
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.Return.Errors = true
+	// 分区选择机制
 	cfg.Producer.Partitioner = sarama.NewHashPartitioner
 
 	var err error
@@ -31,24 +32,25 @@ func NewKafkaProducer(ctx context.Context, hosts []string) (*KafkaProducer, erro
 	return kp, err
 }
 
-func (kp *KafkaProducer) Produce(topic string, message []byte, partition int32) error {
+func (kp *Producer) Produce(topic string, message []byte, key string) error {
 	msg := &sarama.ProducerMessage{
-		Topic:     topic,
-		Value:     sarama.ByteEncoder(message),
-		Partition: partition,
+		Topic: topic,
+		Value: sarama.ByteEncoder(message),
+		//Partition: partition,
+		Key: sarama.StringEncoder(key),
 	}
 
-	partition, offset, err := kp.producer.SendMessage(msg)
+	p, offset, err := kp.producer.SendMessage(msg)
 	if err != nil {
 		panic(err)
 	}
-	logrus.Info("Producer partition = ", partition, "  offset = ", offset)
+	logrus.Println("Producer partition = ", p, "  offset = ", offset)
 	//kp.producer.Input() <- msg
 	return err
 }
 
 /*
-func (kp *KafkaProducer) Run(ctx context.Context) {
+func (kp *Producer) Run(ctx context.Context) {
 	defer kp.producer.AsyncClose()
 	for {
 		select {

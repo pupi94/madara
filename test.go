@@ -3,21 +3,41 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/pupi94/madara/config"
+	"github.com/sirupsen/logrus"
+	"net/url"
 )
+
+type Image struct {
+	StoreID string `json:"store_id"`
+	Host    string `json:"host"`
+	Src     string `json:"src"`
+}
 
 func main() {
 	config.InitKafkaProducer(context.Background())
-	m := map[string]string{"a": "1", "b": "2"}
-	bs, err := json.Marshal(m)
-	if err != nil {
-		panic(err)
+
+	list := [][]string{
+		{"11000", "https://www.gudaoimages.com/YK03800-OR-1.jpg"},
 	}
 
-	for i := 0; i < 5; i++ {
-		err := config.AsyncProducer.Produce("image", bs, 1)
+	for _, item := range list {
+		img := &Image{StoreID: item[0], Src: item[1]}
+		uri, err := url.ParseRequestURI(item[1])
 		if err != nil {
-			panic(err)
+			logrus.Panic("ParseRequestURI Fail: ", err)
+		}
+		img.Host = uri.Host
+
+		bs, err := json.Marshal(img)
+		if err != nil {
+			logrus.Panic("Marshal Fail: ", err)
+		}
+
+		err = config.AsyncProducer.Produce("image", bs, fmt.Sprintf("%s:%s", img.StoreID, img.Host))
+		if err != nil {
+			logrus.Panic("AsyncProducer Fail: ", err)
 		}
 	}
 }

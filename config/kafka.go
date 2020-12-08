@@ -5,11 +5,11 @@ import (
 	"github.com/pupi94/madara/kafka"
 )
 
-var AsyncProducer *kafka.KafkaProducer
+var AsyncProducer *kafka.Producer
 
 func InitKafkaProducer(ctx context.Context) {
 	var err error
-	AsyncProducer, err = kafka.NewKafkaProducer(ctx, Env.KafkaHost)
+	AsyncProducer, err = kafka.NewProducer(ctx, Env.KafkaHost)
 	if err != nil {
 		panic(err)
 	}
