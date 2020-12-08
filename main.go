@@ -21,7 +21,15 @@ func main() {
 				Usage: "Start grpc service",
 				Action: func(c *cli.Context) error {
 					config.InitDB()
+					config.InitKafkaProducer(ctx)
 					return cmd.StartGrpcServer(ctx)
+				},
+			},
+			{
+				Name:  "consume_image",
+				Usage: "consume image",
+				Action: func(c *cli.Context) error {
+					return cmd.ConsumeImage(ctx)
 				},
 			},
 			{
