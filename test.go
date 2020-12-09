@@ -20,6 +20,8 @@ func main() {
 
 	list := [][]string{
 		{"11000", "https://www.gudaoimages.com/YK03800-OR-1.jpg"},
+		{"23005", "https://www.gudaoimages.com/YK03800-OR-2.jpg"},
+		{"23005", "https://www.gudaoimages.com/YK03800-OR-2.jpg"},
 	}
 
 	for _, item := range list {

@@ -20,7 +20,7 @@ func NewProducer(ctx context.Context, hosts []string) (*Producer, error) {
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.Return.Errors = true
 	// 分区选择机制
-	cfg.Producer.Partitioner = sarama.NewHashPartitioner
+	cfg.Producer.Partitioner = sarama.NewReferenceHashPartitioner
 
 	var err error
 	//kp.producer, err = sarama.NewAsyncProducer(hosts, cfg)
