@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/pupi94/madara/cmd"
 	"github.com/pupi94/madara/config"
-	"github.com/pupi94/madara/db"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -34,11 +33,27 @@ func main() {
 			},
 			{
 				Name:  "db:migrate",
-				Usage: "migrate database",
+				Usage: "migrate database. db:migrate up OR db:migrate down. Default up",
 				Action: func(c *cli.Context) error {
+					var direction = c.Args().First()
 					config.InitDB()
-					db.Migrate()
-					return nil
+					return cmd.DbMigrate(ctx, direction, c.Int("step"))
+				},
+				Flags: []cli.Flag{
+					&cli.IntFlag{
+						Name:  "step",
+						Usage: "db migrate up or down step",
+						Value: 1,
+					},
+				},
+			},
+			{
+				Name:  "db:generate_migration",
+				Usage: "generate migration",
+				Action: func(c *cli.Context) error {
+					var name = c.Args().First()
+					config.InitDB()
+					return cmd.GenerateMigration(ctx, name)
 				},
 			},
 		},
