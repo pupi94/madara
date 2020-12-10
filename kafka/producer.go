@@ -6,67 +6,92 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Producer struct {
+type Producer interface {
+	Produce(topic string, message []byte, key string) error
+}
+
+type SyncProducer struct {
 	producer sarama.SyncProducer
-	//producer  sarama.AsyncProducer
+}
+
+type AsyncProducer struct {
+	producer  sarama.AsyncProducer
 	failTimes int32
 }
 
-func NewProducer(ctx context.Context, hosts []string) (*Producer, error) {
-	var kp = new(Producer)
+func NewSyncProducer(hosts []string) (Producer, error) {
+	var sp = new(SyncProducer)
 
 	cfg := sarama.NewConfig()
-
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.Return.Errors = true
 	// 分区选择机制
 	cfg.Producer.Partitioner = sarama.NewReferenceHashPartitioner
 
 	var err error
-	//kp.producer, err = sarama.NewAsyncProducer(hosts, cfg)
-	kp.producer, err = sarama.NewSyncProducer(hosts, cfg)
+	sp.producer, err = sarama.NewSyncProducer(hosts, cfg)
 	if err != nil {
 		logrus.WithError(err).Panic("create kafka async producer failed")
 	}
-	//go kp.Run(ctx)
-	return kp, err
+	return sp, err
 }
 
-func (kp *Producer) Produce(topic string, message []byte, key string) error {
+func (sp *SyncProducer) Produce(topic string, message []byte, key string) error {
 	msg := &sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.ByteEncoder(message),
-		//Partition: partition,
-		Key: sarama.StringEncoder(key),
+		Key:   sarama.StringEncoder(key),
 	}
 
-	p, offset, err := kp.producer.SendMessage(msg)
-	if err != nil {
-		panic(err)
-	}
-	logrus.Println("Producer partition = ", p, "  offset = ", offset)
-	//kp.producer.Input() <- msg
+	_, _, err := sp.producer.SendMessage(msg)
 	return err
 }
 
-/*
-func (kp *Producer) Run(ctx context.Context) {
-	defer kp.producer.AsyncClose()
+func NewAsyncProducer(ctx context.Context, hosts []string) (Producer, error) {
+	var ap = new(AsyncProducer)
+
+	cfg := sarama.NewConfig()
+	cfg.Producer.Return.Successes = true
+	cfg.Producer.Return.Errors = true
+	// 分区选择机制
+	cfg.Producer.Partitioner = sarama.NewReferenceHashPartitioner
+
+	var err error
+	ap.producer, err = sarama.NewAsyncProducer(hosts, cfg)
+	if err != nil {
+		logrus.WithError(err).Panic("create kafka async producer failed")
+	}
+	go ap.Run(ctx)
+	return ap, err
+}
+
+func (ap *AsyncProducer) Produce(topic string, message []byte, key string) error {
+	msg := &sarama.ProducerMessage{
+		Topic: topic,
+		Value: sarama.ByteEncoder(message),
+		Key:   sarama.StringEncoder(key),
+	}
+	ap.producer.Input() <- msg
+	return nil
+}
+
+func (ap *AsyncProducer) Run(ctx context.Context) {
+	defer ap.producer.AsyncClose()
 	for {
 		select {
-		case <-kp.producer.Successes():
-		case fail := <-kp.producer.Errors():
-			kp.failTimes += 1
+		case <-ap.producer.Successes():
+		case fail := <-ap.producer.Errors():
+			ap.failTimes += 1
 
 			val, _ := fail.Msg.Value.Encode()
 			logrus.WithFields(logrus.Fields{
 				"topic":      fail.Msg.Topic,
 				"partitions": fail.Msg.Partition,
 				"value":      string(val),
-				"failTimes":  kp.failTimes,
+				"failTimes":  ap.failTimes,
 			}).WithError(fail.Err).Warn("send kafka failed")
 		case <-ctx.Done():
 			return
 		}
 	}
-}*/
+}
