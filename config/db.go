@@ -25,16 +25,7 @@ func InitDB() {
 
 	DB.ShowSQL(Env.DBShowSQL)
 
-	//log := logrus.New()
-	//level, err := logrus.ParseLevel(Env.LogLevel)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//log.SetLevel(level)
-	//DB.SetLogger(log)
-
-	err = DB.Ping()
-	if err != nil {
+	if err = DB.Ping(); err != nil {
 		panic(err)
 	}
 }

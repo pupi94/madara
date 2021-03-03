@@ -2,7 +2,7 @@ package config
 
 import (
 	"context"
-	"github.com/pupi94/madara/kafka"
+	"github.com/pupi94/madara/tools/kafka"
 )
 
 var AsyncProducer kafka.Producer

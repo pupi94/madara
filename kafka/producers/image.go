@@ -11,5 +11,5 @@ func SyncImage() error {
 	if err != nil {
 		panic(err)
 	}
-	return config.AsyncProducer.Produce(config.Env.ImageTopicName, bs, 1)
+	return config.AsyncProducer.Produce(config.Env.ImageTopicName, bs, "")
 }

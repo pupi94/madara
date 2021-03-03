@@ -8,6 +8,8 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
+	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/sirupsen/logrus v1.7.0
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
