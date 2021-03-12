@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/pupi94/madara/config"
-	"github.com/pupi94/madara/server"
+	"github.com/pupi94/madara/grpc/server"
 	"github.com/sirupsen/logrus"
 )
 

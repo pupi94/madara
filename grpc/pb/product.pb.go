@@ -615,14 +615,17 @@ func (*GetProductRequest) Descriptor() ([]byte, []int) {
 }
 
 // 获取商品列表
-type SearchProductsRequest struct {
+type ListProductRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Page    int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PerPage int64 `protobuf:"varint,2,opt,name=per_page,json=perPage,proto3" json:"per_page,omitempty"`
 }
 
-func (x *SearchProductsRequest) Reset() {
-	*x = SearchProductsRequest{}
+func (x *ListProductRequest) Reset() {
+	*x = ListProductRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_product_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -630,13 +633,13 @@ func (x *SearchProductsRequest) Reset() {
 	}
 }
 
-func (x *SearchProductsRequest) String() string {
+func (x *ListProductRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchProductsRequest) ProtoMessage() {}
+func (*ListProductRequest) ProtoMessage() {}
 
-func (x *SearchProductsRequest) ProtoReflect() protoreflect.Message {
+func (x *ListProductRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_product_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -648,19 +651,36 @@ func (x *SearchProductsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchProductsRequest.ProtoReflect.Descriptor instead.
-func (*SearchProductsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListProductRequest.ProtoReflect.Descriptor instead.
+func (*ListProductRequest) Descriptor() ([]byte, []int) {
 	return file_product_proto_rawDescGZIP(), []int{7}
 }
 
-type SearchProductsResponse struct {
+func (x *ListProductRequest) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListProductRequest) GetPerPage() int64 {
+	if x != nil {
+		return x.PerPage
+	}
+	return 0
+}
+
+type ListProductResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Count    int64              `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	Products []*ProductResponse `protobuf:"bytes,2,rep,name=products,proto3" json:"products,omitempty"`
 }
 
-func (x *SearchProductsResponse) Reset() {
-	*x = SearchProductsResponse{}
+func (x *ListProductResponse) Reset() {
+	*x = ListProductResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_product_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -668,13 +688,13 @@ func (x *SearchProductsResponse) Reset() {
 	}
 }
 
-func (x *SearchProductsResponse) String() string {
+func (x *ListProductResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchProductsResponse) ProtoMessage() {}
+func (*ListProductResponse) ProtoMessage() {}
 
-func (x *SearchProductsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListProductResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_product_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -686,9 +706,23 @@ func (x *SearchProductsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchProductsResponse.ProtoReflect.Descriptor instead.
-func (*SearchProductsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListProductResponse.ProtoReflect.Descriptor instead.
+func (*ListProductResponse) Descriptor() ([]byte, []int) {
 	return file_product_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ListProductResponse) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *ListProductResponse) GetProducts() []*ProductResponse {
+	if x != nil {
+		return x.Products
+	}
+	return nil
 }
 
 type CreateProductRequestVariant struct {
@@ -1114,11 +1148,18 @@ var file_product_proto_rawDesc = []byte{
 	0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x12,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22,
 	0x13, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x22, 0x17, 0x0a, 0x15, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72,
-	0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x18, 0x0a,
-	0x16, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x07, 0x5a, 0x05, 0x2e, 0x3b, 0x70, 0x62, 0x73,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x73, 0x74, 0x22, 0x43, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x64,
+	0x75, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61,
+	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x19,
+	0x0a, 0x08, 0x70, 0x65, 0x72, 0x5f, 0x70, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x07, 0x70, 0x65, 0x72, 0x50, 0x61, 0x67, 0x65, 0x22, 0x5c, 0x0a, 0x13, 0x4c, 0x69, 0x73,
+	0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2f, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x08, 0x70,
+	0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x3b, 0x70, 0x62, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1142,8 +1183,8 @@ var file_product_proto_goTypes = []interface{}{
 	(*DeleteProductRequest)(nil),        // 4: v1.DeleteProductRequest
 	(*ProductResponse)(nil),             // 5: v1.ProductResponse
 	(*GetProductRequest)(nil),           // 6: v1.GetProductRequest
-	(*SearchProductsRequest)(nil),       // 7: v1.SearchProductsRequest
-	(*SearchProductsResponse)(nil),      // 8: v1.SearchProductsResponse
+	(*ListProductRequest)(nil),          // 7: v1.ListProductRequest
+	(*ListProductResponse)(nil),         // 8: v1.ListProductResponse
 	(*CreateProductRequestVariant)(nil), // 9: v1.CreateProductRequest.variant
 	(*UpdateProductRequestVariant)(nil), // 10: v1.UpdateProductRequest.variant
 	(*ProductResponseVariant)(nil),      // 11: v1.ProductResponse.variant
@@ -1169,17 +1210,18 @@ var file_product_proto_depIdxs = []int32{
 	0,  // 12: v1.ProductResponse.options:type_name -> v1.Option
 	1,  // 13: v1.ProductResponse.images:type_name -> v1.Image
 	11, // 14: v1.ProductResponse.variants:type_name -> v1.ProductResponse.variant
-	13, // 15: v1.UpdateProductRequest.variant.id:type_name -> google.protobuf.StringValue
-	13, // 16: v1.UpdateProductRequest.variant.option1:type_name -> google.protobuf.StringValue
-	13, // 17: v1.UpdateProductRequest.variant.option2:type_name -> google.protobuf.StringValue
-	13, // 18: v1.UpdateProductRequest.variant.option3:type_name -> google.protobuf.StringValue
-	15, // 19: v1.UpdateProductRequest.variant.price:type_name -> google.protobuf.DoubleValue
-	16, // 20: v1.UpdateProductRequest.variant.inventory_quantity:type_name -> google.protobuf.Int64Value
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	5,  // 15: v1.ListProductResponse.products:type_name -> v1.ProductResponse
+	13, // 16: v1.UpdateProductRequest.variant.id:type_name -> google.protobuf.StringValue
+	13, // 17: v1.UpdateProductRequest.variant.option1:type_name -> google.protobuf.StringValue
+	13, // 18: v1.UpdateProductRequest.variant.option2:type_name -> google.protobuf.StringValue
+	13, // 19: v1.UpdateProductRequest.variant.option3:type_name -> google.protobuf.StringValue
+	15, // 20: v1.UpdateProductRequest.variant.price:type_name -> google.protobuf.DoubleValue
+	16, // 21: v1.UpdateProductRequest.variant.inventory_quantity:type_name -> google.protobuf.Int64Value
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_product_proto_init() }
@@ -1274,7 +1316,7 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchProductsRequest); i {
+			switch v := v.(*ListProductRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1286,7 +1328,7 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchProductsResponse); i {
+			switch v := v.(*ListProductResponse); i {
 			case 0:
 				return &v.state
 			case 1:
