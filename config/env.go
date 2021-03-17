@@ -14,6 +14,10 @@ type Environment struct {
 	DBDatabase string `env:"DB_DATABASE" envDefault:"madara_development"`
 	DBShowSQL  bool   `env:"DB_SHOW_SQL" envDefault:"true"`
 
+	RdsHost      string `env:"RDS_HOST" envDefault:"127.0.0.1"`
+	RdsPort      int    `env:"RDS_PORT" envDefault:"6379"`
+	RdsNamespace string `env:"RDS_NAMESPACE" envDefault:""`
+
 	KafkaHost      []string `env:"KAFKA_SERVER"  envDefault:"127.0.0.1:9092"`
 	ImageTopicName string   `env:"IMAGE_TOPIC_NAME"  envDefault:"image"`
 
