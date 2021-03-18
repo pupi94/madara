@@ -40,10 +40,10 @@ func NewClient(host string, port int, cfg *Config) *Client {
 	return &Client{Pool: pool, config: cfg}
 }
 
-func (c *Client) Set(key string, value interface{}, expires ...time.Duration) *Response {
+func (c *Client) Set(key string, value interface{}, expires ...time.Duration) (interface{}, error) {
 	conn := c.Pool.Get()
 	defer conn.Close()
-	return NewResponse(conn.Do("set", c.namespaceKey(key), value, "ex", c.expireTime(expires)))
+	return conn.Do("set", c.namespaceKey(key), value, "ex", c.expireTime(expires))
 }
 
 func (c *Client) SAdd(key string, fields []interface{}) *Response {
@@ -63,6 +63,12 @@ func (c *Client) LRem(key string, count, value interface{}) *Response {
 	defer conn.Close()
 
 	return NewResponse(conn.Do("lrem", c.namespaceKey(key), count, value))
+}
+
+func (c *Client) Exec(fn func(conn redis.Conn) *Response) *Response {
+	conn := c.Pool.Get()
+	defer conn.Close()
+	return fn(conn)
 }
 
 //多键删除
