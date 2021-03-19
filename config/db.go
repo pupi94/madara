@@ -2,24 +2,28 @@ package config
 
 import (
 	"fmt"
+	"gorm.io/gorm/logger"
+	"log"
+	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
-	"xorm.io/xorm"
+	"github.com/sirupsen/logrus"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *xorm.Engine
+var DB *gorm.DB
 
 func InitDB() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4", Env.DBUsername, Env.DBPassword, Env.DBHostname, Env.DBPort, Env.DBDatabase)
 
 	var err error
-	DB, err = xorm.NewEngine("mysql", dsn)
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
-	DB.SetConnMaxLifetime(time.Second * 10)
+	DB.(time.Second * 10)
 	DB.SetMaxOpenConns(100)
 	DB.SetMaxIdleConns(50)
 
