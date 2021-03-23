@@ -3,16 +3,17 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/pupi94/madara/config"
 	"io/ioutil"
 	"os"
 	"strings"
 	"time"
 	"xorm.io/xorm"
+
+	"github.com/pupi94/madara/config"
 )
 
 func MigrateUp() {
-	db := config.DB
+	db := xormDB()
 	createSchemaTable(db)
 
 	dbLastVersion := findLastVersion(db)
@@ -41,7 +42,7 @@ func MigrateUp() {
 }
 
 func MigrateDown(step int) {
-	db := config.DB
+	db := xormDB()
 
 	dbLastVersion := findLastVersion(db)
 	if dbLastVersion == "" {
@@ -199,4 +200,21 @@ func downMigrationVersion(db *xorm.Engine, version string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func xormDB() *xorm.Engine {
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4",
+		config.Env.DBUsername,
+		config.Env.DBPassword,
+		config.Env.DBHostname,
+		config.Env.DBPort,
+		config.Env.DBDatabase,
+	)
+	db, err := xorm.NewEngine("mysql", dsn)
+	if err != nil {
+		panic(err)
+	}
+	db.ShowSQL(true)
+	return db
 }

@@ -9,6 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v1.8.4
+	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/jinzhu/now v1.1.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -19,7 +20,7 @@ require (
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4 // indirect
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
-	gorm.io/driver/mysql v1.0.5 // indirect
-	gorm.io/gorm v1.21.4 // indirect
+	gorm.io/driver/mysql v1.0.5
+	gorm.io/gorm v1.21.4
 	xorm.io/xorm v1.0.5
 )

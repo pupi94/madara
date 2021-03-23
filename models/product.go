@@ -1,13 +1,18 @@
 package models
 
-type Product struct {
-	ID      int64
-	StoreID int64
-	Title   string
+import (
+	"github.com/google/uuid"
+)
 
+type Product struct {
+	ID          uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	StoreID     uuid.UUID `gorm:"type:uuid;not null"`
+	Title       string
 	Description string
-	CreatedAt   int64
-	UpdatedAt   int64
+	Published   bool `gorm:"default:false"`
+	PublishedAt int64
+	CreatedAt   int64 `gorm:"autoCreateTime`
+	UpdatedAt   int64 `gorm:"autoUpdateTime`
 }
 
 type FullProduct struct {

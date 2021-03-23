@@ -1,19 +1,23 @@
 package main
 
 import (
+	"fmt"
+	"github.com/google/uuid"
 	"github.com/pupi94/madara/config"
+	"github.com/pupi94/madara/models"
 )
-
-type SchemaMigration struct {
-	Version string `xorm:"version"`
-}
 
 func main() {
 	config.InitDB()
 
-	s := &SchemaMigration{Version: "20201207105022"}
-	_, err := config.DB.Insert(s)
-	if err != nil {
-		panic(err)
+	p := models.Product{Title: "test", Description: "212", StoreID: uuid.New()}
+
+	fmt.Println(p.ID)
+
+	db := config.DB
+	res := db.Create(&p)
+	if res.Error != nil {
+		panic(res.Error)
 	}
+	fmt.Println(p.ID)
 }

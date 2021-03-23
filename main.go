@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/pupi94/madara/cmd"
-	"github.com/pupi94/madara/config"
 	"os"
 
+	"github.com/pupi94/madara/cmd"
+	"github.com/pupi94/madara/config"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
