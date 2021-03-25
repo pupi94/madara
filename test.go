@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/pupi94/madara/config"
 	"github.com/pupi94/madara/models"
 )
@@ -10,7 +9,7 @@ import (
 func main() {
 	config.InitDB()
 
-	p := models.Product{Title: "test", Description: "212", StoreID: uuid.New()}
+	p := models.Product{Title: "test", Description: "212", StoreID: 1212}
 
 	fmt.Println(p.ID)
 
