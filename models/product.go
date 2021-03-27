@@ -9,7 +9,6 @@ type Product struct {
 	PublishedAt *int64
 	CreatedAt   int64 `gorm:"autoCreateTime`
 	UpdatedAt   int64 `gorm:"autoUpdateTime`
-}
-
-type FullProduct struct {
+	Store       Store
+	Inventory   *Inventory
 }
