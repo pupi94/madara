@@ -17,31 +17,31 @@ func NewProductCache() *ProductCache {
 	return &ProductCache{redis: config.RedisClient}
 }
 
-func (pc *ProductCache) SaveFullProduct(ctx context.Context, product *models.FullProduct) {
+func (pc *ProductCache) Save(ctx context.Context, product *models.Product) {
 
 }
 
-func (pc *ProductCache) BatchSaveFullProducts(ctx context.Context, product *models.FullProduct) {
+func (pc *ProductCache) BatchSave(ctx context.Context, product *models.Product) {
 
 }
 
-func (pc *ProductCache) DeleteFullProduct(ctx context.Context, storeId string) {
+func (pc *ProductCache) Delete(ctx context.Context, storeId string) {
 
 }
 
-func (pc *ProductCache) GetFullProduct(ctx context.Context, product *models.FullProduct) {
+func (pc *ProductCache) Get(ctx context.Context, product *models.Product) {
 
 }
 
-func (pc *ProductCache) ListFullProduct(ctx context.Context, product *models.FullProduct) {
+func (pc *ProductCache) Select(ctx context.Context, productIds []uint) {
 
 }
 
-func (pc *ProductCache) BatchDeleteFullProducts(ctx context.Context, product *models.FullProduct) {
+func (pc *ProductCache) BatchDelete(ctx context.Context, product *models.Product) {
 
 }
 
-func (pc *ProductCache) SaveProduct(ctx context.Context, product *models.Product) error {
+func (pc *ProductCache) saveProduct(ctx context.Context, product *models.Product) error {
 	temp := product.Description
 	defer func() {
 		product.Description = temp
@@ -56,6 +56,6 @@ func (pc *ProductCache) SaveProduct(ctx context.Context, product *models.Product
 	return err
 }
 
-func (pc *ProductCache) cacheKey(id, storeId int64) string {
+func (pc *ProductCache) cacheKey(id, storeId uint) string {
 	return fmt.Sprintf("%d:product:%d", id, storeId)
 }

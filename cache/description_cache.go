@@ -2,16 +2,15 @@ package cache
 
 import (
 	"context"
-	"github.com/pupi94/madara/models"
 )
 
 type DescriptionCache struct {
 }
 
-func (pc *DescriptionCache) SaveFullProduct(ctx context.Context, product *models.FullProduct) {
+func (pc *DescriptionCache) Save(ctx context.Context, productId uint, desc string) {
 
 }
 
-func (pc *DescriptionCache) BatchSaveFullProducts(ctx context.Context, product *models.FullProduct) {
+func (pc *DescriptionCache) BatchSave(ctx context.Context, list map[uint]string) {
 
 }
