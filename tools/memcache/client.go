@@ -2,22 +2,10 @@ package memcache
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
 )
-
-/*type Client interface {
-	Get(key string) (bool, []byte, error)
-	GetMulti(keys []string) (map[string][]byte, error)
-	Remove(key string) (bool, error)
-	Set(key string, value []byte, ttl time.Duration) error
-	Increment(key string, delta int64) (uint64, error)
-	TryLockOnce(key string) (bool, error)
-	Unlock(key string) (bool, error)
-}
-*/
 
 const (
 	// DefaultTimeout is the default socket read/write timeout.
@@ -29,31 +17,28 @@ const (
 )
 
 type Client struct {
-	namespace string
-	client    *memcache.Client
+	namespace   string
+	defaultTtl  time.Duration
+	maxIdleConn int
+	client      *memcache.Client
 }
 
-type Config struct {
-	Timeout     time.Duration
-	MaxIdleConn int
-	Namespace   string
-}
-
-func NewClient(servers []string, config *Config) *Client {
+func NewClient(servers []string) *Client {
 	client := memcache.New(servers...)
 
-	if config.MaxIdleConn <= 0 {
-		client.MaxIdleConns = DefaultMaxIdleConn
-	} else {
-		client.MaxIdleConns = config.MaxIdleConn
+	return &Client{
+		client:      client,
+		defaultTtl:  DefaultTimeout,
+		maxIdleConn: DefaultMaxIdleConn,
 	}
+}
 
-	if config.Timeout <= 0 {
-		client.Timeout = DefaultTimeout
-	} else {
-		client.Timeout = config.Timeout
-	}
-	return &Client{client: client, namespace: config.Namespace}
+func (c *Client) SetDefaultTtl(t time.Duration) {
+	c.defaultTtl = t
+}
+
+func (c *Client) SetNamespace(namespace string) {
+	c.namespace = namespace
 }
 
 func (c *Client) Get(key string) ([]byte, error) {
@@ -101,10 +86,23 @@ func (c *Client) Remove(key string) (bool, error) {
 	return false, err
 }
 
-func (c *Client) Set(key string, value []byte, ttl time.Duration) error {
-	if ttl > 30*24*time.Hour {
-		ttl = 30 * 24 * time.Hour
+func (c *Client) Set(key string, value []byte) error {
+	item := &memcache.Item{
+		Key:        c.namespaceKey(key),
+		Value:      value,
+		Expiration: int32(c.defaultTtl.Seconds()),
 	}
+	if err := c.client.Set(item); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) SetWitTtl(key string, value []byte, ttl time.Duration) error {
+	if ttl <= 0 {
+		ttl = c.defaultTtl
+	}
+
 	item := &memcache.Item{
 		Key:        c.namespaceKey(key),
 		Value:      value,
@@ -116,58 +114,9 @@ func (c *Client) Set(key string, value []byte, ttl time.Duration) error {
 	return nil
 }
 
-func (c *Client) Increment(key string, delta int64) (uint64, error) {
-	var f func(string, uint64) (uint64, error)
-	if delta > 0 {
-		f = c.client.Increment
-	} else {
-		f = c.client.Decrement
-		delta *= -1
-	}
-
-	realkey := c.namespaceKey(key)
-
-	newv, err := f(realkey, uint64(delta))
-	if err == nil || err != memcache.ErrCacheMiss {
-		return newv, err
-	}
-
-	//try to add
-	err = c.client.Add(&memcache.Item{
-		Key:   realkey,
-		Value: []byte(strconv.FormatInt(delta, 10)),
-	})
-	if err == nil {
-		return uint64(delta), nil
-	} else if err != memcache.ErrNotStored {
-		return 0, err
-	}
-
-	//if add returns ErrNotStored(key exists), try increment again
-	return f(realkey, uint64(delta))
-}
-
-func (c *Client) TryLockOnce(key string) (bool, error) {
-	err := c.client.Add(&memcache.Item{
-		Key: c.namespaceKey(key),
-	})
-
-	if err == nil {
-		return true, nil
-	} else if err == memcache.ErrNotStored {
-		return false, nil
-	} else {
-		return false, err
-	}
-}
-
 func (c *Client) namespaceKey(key string) string {
 	if c.namespace == "" {
 		return key
 	}
 	return fmt.Sprintf("%s:%s", c.namespace, key)
-}
-
-func (c *Client) Unlock(key string) (bool, error) {
-	return c.Remove(key)
 }

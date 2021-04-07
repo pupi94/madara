@@ -8,25 +8,28 @@ import (
 )
 
 // cache 默认有效时间
-var DefaultTTL = 3 * 24 * time.Hour
+const DefaultTTL = 3 * 24 * time.Hour
 
 type Config struct {
-	Namespace string
+	MaxIdle     uint
+	MaxActive   uint
+	IdleTimeout time.Duration
 }
 
 type Client struct {
-	Pool   *redis.Pool
-	config *Config
+	Pool       *redis.Pool
+	namespace  string
+	defaultTtl time.Duration
 }
 
-func NewClient(host string, port int, cfg *Config) *Client {
+func NewClient(server string) *Client {
 	pool := &redis.Pool{
 		MaxIdle:     15,
 		MaxActive:   100,
 		IdleTimeout: time.Second * 30,
 		Wait:        true,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
+			return redis.Dial("tcp", server)
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
 			if time.Since(t) < time.Minute {
@@ -37,13 +40,27 @@ func NewClient(host string, port int, cfg *Config) *Client {
 		},
 	}
 
-	return &Client{Pool: pool, config: cfg}
+	return &Client{Pool: pool, defaultTtl: DefaultTTL}
 }
 
-func (c *Client) Set(key string, value interface{}, expires ...time.Duration) (interface{}, error) {
+func (c *Client) SetDefaultTtl(t time.Duration) {
+	c.defaultTtl = t
+}
+
+func (c *Client) SetNamespace(namespace string) {
+	c.namespace = namespace
+}
+
+func (c *Client) Set(key string, value interface{}) (interface{}, error) {
 	conn := c.Pool.Get()
 	defer conn.Close()
-	return conn.Do("set", c.namespaceKey(key), value, "ex", c.expireTime(expires))
+	return conn.Do("set", c.namespaceKey(key), value, "ex", c.defaultTtl)
+}
+
+func (c *Client) SetWithTtl(key string, value interface{}, expire time.Duration) (interface{}, error) {
+	conn := c.Pool.Get()
+	defer conn.Close()
+	return conn.Do("set", c.namespaceKey(key), value, "ex", c.expireTime(expire))
 }
 
 func (c *Client) SAdd(key string, fields []interface{}) *Response {
@@ -83,18 +100,18 @@ func (c *Client) Delete(keys ...string) *Response {
 	return NewResponse(conn.Do("DEL", redis.Args{}.AddFlat(keys)...))
 }
 
-func (c *Client) expireTime(expires []time.Duration) time.Duration {
-	if len(expires) == 0 {
-		return DefaultTTL
+func (c *Client) expireTime(expire time.Duration) time.Duration {
+	if expire <= 0 {
+		return c.defaultTtl
 	}
-	return expires[0]
+	return expire
 }
 
 func (c *Client) namespaceKey(key string) string {
-	if c.config.Namespace == "" {
+	if c.namespace == "" {
 		return key
 	}
-	return fmt.Sprintf("%s:%s", c.config.Namespace, key)
+	return fmt.Sprintf("%s:%s", c.namespace, key)
 }
 
 type Response struct {
