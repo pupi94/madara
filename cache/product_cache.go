@@ -18,7 +18,7 @@ func NewProductCache() *ProductCache {
 }
 
 func (pc *ProductCache) Save(ctx context.Context, product *models.Product) {
-
+	pc.redis.Set()
 }
 
 func (pc *ProductCache) BatchSave(ctx context.Context, product *models.Product) {
@@ -56,6 +56,6 @@ func (pc *ProductCache) saveProduct(ctx context.Context, product *models.Product
 	return err
 }
 
-func (pc *ProductCache) cacheKey(id, storeId uint) string {
+func (pc *ProductCache) cacheKey(id, storeId uint64) string {
 	return fmt.Sprintf("%d:product:%d", id, storeId)
 }

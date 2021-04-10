@@ -3,7 +3,9 @@ module github.com/pupi94/madara
 go 1.14
 
 require (
+	github.com/Masterminds/squirrel v1.5.0 // indirect
 	github.com/Shopify/sarama v1.27.2
+	github.com/aws/aws-sdk-go v1.38.17 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/caarlos0/env/v6 v6.4.0
 	github.com/go-redis/redis/v8 v8.7.1 // indirect
@@ -13,6 +15,7 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/jmoiron/sqlx v1.3.3 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/sirupsen/logrus v1.7.0
