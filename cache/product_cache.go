@@ -94,7 +94,7 @@ func (pc *ProductCache) Delete(ctx context.Context, storeId, productId xtypes.Uu
 
 	eg.Go(func() error {
 		res := pc.redis.Delete(pc.cacheKey(storeId, productId))
-		return res.Error
+		return res.Error()
 	})
 
 	eg.Go(func() error {
@@ -118,7 +118,7 @@ func (pc *ProductCache) BatchDelete(ctx context.Context, storeId xtypes.Uuid, pr
 			ids = append(ids, pc.cacheKey(storeId, id))
 		}
 		res := pc.redis.Delete(ids...)
-		return res.Error
+		return res.Error()
 	})
 
 	eg.Go(func() error {
@@ -153,7 +153,7 @@ func (pc *ProductCache) saveMainInfo(ctx context.Context, product *models.FullPr
 		return err
 	}
 	res := pc.redis.Set(pc.cacheKey(product.StoreID, product.ID), data)
-	return res.Error
+	return res.Error()
 }
 
 func (pc *ProductCache) batchSaveMainInfo(ctx context.Context, storeId xtypes.Uuid, products []*models.FullProduct) error {
@@ -171,7 +171,7 @@ func (pc *ProductCache) batchSaveMainInfo(ctx context.Context, storeId xtypes.Uu
 		product.Description = temp
 	}
 	res := pc.redis.MultiSet(dataMap)
-	return res.Error
+	return res.Error()
 }
 
 func (pc *ProductCache) cacheKey(storeId, id xtypes.Uuid) string {

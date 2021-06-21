@@ -17,7 +17,7 @@ func NewDescCache(redisClient *redis.Client) *DescriptionCache {
 
 func (dc *DescriptionCache) Save(ctx context.Context, storeId, productId xtypes.Uuid, desc string) error {
 	res := dc.redis.Set(dc.cacheKey(storeId, productId), desc)
-	return res.Error
+	return res.Error()
 }
 
 func (dc *DescriptionCache) Delete(ctx context.Context, storeId xtypes.Uuid, productIds ...xtypes.Uuid) error {
@@ -26,7 +26,7 @@ func (dc *DescriptionCache) Delete(ctx context.Context, storeId xtypes.Uuid, pro
 		keys = append(keys, dc.cacheKey(storeId, id))
 	}
 	res := dc.redis.Delete(keys...)
-	return res.Error
+	return res.Error()
 }
 
 func (dc *DescriptionCache) BatchSave(ctx context.Context, storeId xtypes.Uuid, data map[xtypes.Uuid]string) error {
@@ -36,7 +36,12 @@ func (dc *DescriptionCache) BatchSave(ctx context.Context, storeId xtypes.Uuid, 
 		cacheData[dc.cacheKey(storeId, k)] = v
 	}
 	res := dc.redis.MultiSet(cacheData)
-	return res.Error
+	return res.Error()
+}
+
+func (dc *DescriptionCache) Get(ctx context.Context, storeId, productId xtypes.Uuid) (string, error) {
+	res := dc.redis.Get(dc.cacheKey(storeId, productId))
+	return res.String()
 }
 
 func (dc *DescriptionCache) cacheKey(storeId, id xtypes.Uuid) string {

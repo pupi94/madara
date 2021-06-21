@@ -17,7 +17,7 @@ func NewInventoryCache(redisClient *redis.Client) *InventoryCache {
 
 func (ic *InventoryCache) Save(ctx context.Context, storeId, sourceId xtypes.Uuid, inventory int64) error {
 	res := ic.redis.Set(ic.cacheKey(storeId, sourceId), inventory)
-	return res.Error
+	return res.Error()
 }
 
 func (ic *InventoryCache) BatchSave(ctx context.Context, storeId xtypes.Uuid, data map[xtypes.Uuid]int64) error {
@@ -27,7 +27,7 @@ func (ic *InventoryCache) BatchSave(ctx context.Context, storeId xtypes.Uuid, da
 		cacheData[ic.cacheKey(storeId, k)] = v
 	}
 	res := ic.redis.MultiSet(cacheData)
-	return res.Error
+	return res.Error()
 }
 
 func (ic *InventoryCache) Delete(ctx context.Context, storeId xtypes.Uuid, sourceIds ...xtypes.Uuid) error {
@@ -36,7 +36,7 @@ func (ic *InventoryCache) Delete(ctx context.Context, storeId xtypes.Uuid, sourc
 		keys = append(keys, ic.cacheKey(storeId, id))
 	}
 	res := ic.redis.Delete(keys...)
-	return res.Error
+	return res.Error()
 }
 
 func (ic *InventoryCache) cacheKey(storeId, id xtypes.Uuid) string {

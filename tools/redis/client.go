@@ -51,6 +51,12 @@ func (c *Client) SetNamespace(namespace string) {
 	c.namespace = namespace
 }
 
+func (c *Client) Get(key string) *Response {
+	conn := c.Pool.Get()
+	defer conn.Close()
+	return NewResponse(conn.Do("get", c.namespaceKey(key)))
+}
+
 func (c *Client) Set(key string, value interface{}) *Response {
 	conn := c.Pool.Get()
 	defer conn.Close()
@@ -124,55 +130,4 @@ func (c *Client) namespaceKey(key string) string {
 		return key
 	}
 	return fmt.Sprintf("%s:%s", c.namespace, key)
-}
-
-type Response struct {
-	Reply interface{}
-	Error error
-}
-
-func NewResponse(reply interface{}, err error) *Response {
-	return &Response{Reply: reply, Error: err}
-}
-
-var LockDefaultTTL = 60
-
-type Redlock struct {
-	pool *redis.Pool
-	Ttl  int
-	Key  string
-}
-
-func NewRedlock(client *Client, key string) *Redlock {
-	return &Redlock{
-		pool: client.Pool,
-		Ttl:  LockDefaultTTL,
-		Key:  key,
-	}
-}
-
-func (rl *Redlock) Setnx() (bool, error) {
-	conn := rl.pool.Get()
-	defer conn.Close()
-
-	reply, err := conn.Do("SETNX", rl.Key, 1)
-	if err != nil {
-		return false, err
-	}
-	if reply.(int64) != 1 {
-		return false, nil
-	}
-	_, err = conn.Do("EXPIRE", rl.Key, rl.Ttl)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
-func (rl *Redlock) Expire() error {
-	conn := rl.pool.Get()
-	defer conn.Close()
-
-	_, err := conn.Do("DEL", rl.Key)
-	return err
 }
