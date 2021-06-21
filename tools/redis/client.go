@@ -51,10 +51,22 @@ func (c *Client) SetNamespace(namespace string) {
 	c.namespace = namespace
 }
 
-func (c *Client) Set(key string, value interface{}) (interface{}, error) {
+func (c *Client) Set(key string, value interface{}) *Response {
 	conn := c.Pool.Get()
 	defer conn.Close()
-	return conn.Do("set", c.namespaceKey(key), value, "ex", c.defaultTtl)
+	return NewResponse(conn.Do("set", c.namespaceKey(key), value, "ex", c.defaultTtl))
+}
+
+func (c *Client) MultiSet(data map[string]interface{}) *Response {
+	conn := c.Pool.Get()
+	defer conn.Close()
+	if reply, err := conn.Do("multi"); err != nil {
+		return NewResponse(reply, err)
+	}
+	for key, value := range data {
+		_, _ = conn.Do("set", c.namespaceKey(key), value, "ex", c.defaultTtl)
+	}
+	return NewResponse(conn.Do("exec"))
 }
 
 func (c *Client) SetWithTtl(key string, value interface{}, expire time.Duration) (interface{}, error) {
@@ -115,12 +127,12 @@ func (c *Client) namespaceKey(key string) string {
 }
 
 type Response struct {
-	reply interface{}
-	err   error
+	Reply interface{}
+	Error error
 }
 
 func NewResponse(reply interface{}, err error) *Response {
-	return &Response{reply: reply, err: err}
+	return &Response{Reply: reply, Error: err}
 }
 
 var LockDefaultTTL = 60

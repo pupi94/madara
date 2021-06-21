@@ -1,4 +1,4 @@
 package services
 
-type Form struct {
+type ProductForm struct {
 }
