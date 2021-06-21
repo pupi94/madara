@@ -4,7 +4,7 @@ package v1;
 import "google/protobuf/wrappers.proto";
 import "common.proto";
 
-option go_package = ".;pb";
+option go_package = ".;v1";
 
 message Option {
   // @inject_tag: binding:"required,option_name"
