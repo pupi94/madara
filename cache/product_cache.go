@@ -177,3 +177,5 @@ func (pc *ProductCache) batchSaveMainInfo(ctx context.Context, storeId xtypes.Uu
 func (pc *ProductCache) cacheKey(storeId, id xtypes.Uuid) string {
 	return fmt.Sprintf("%s:product:%s", storeId, id)
 }
+
+//func sharedGet()

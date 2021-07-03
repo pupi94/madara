@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"github.com/pupi94/madara/components/xtypes"
 	"github.com/pupi94/madara/tools/redis"
+	"github.com/pupi94/madara/tools/syncx"
 )
 
 type InventoryCache struct {
-	redis *redis.Client
+	redis      *redis.Client
+	sharedCall syncx.SharedCalls
 }
 
 func NewInventoryCache(redisClient *redis.Client) *InventoryCache {
@@ -39,6 +41,18 @@ func (ic *InventoryCache) Delete(ctx context.Context, storeId xtypes.Uuid, sourc
 	return res.Error()
 }
 
+func (ic *InventoryCache) Get() (int64, error) {
+	return 0, nil
+}
+
+func (ic *InventoryCache) BatchGet(ctx context.Context, storeId, sourceId xtypes.Uuid) (map[string]int64, error) {
+	return nil, nil
+}
+
 func (ic *InventoryCache) cacheKey(storeId, id xtypes.Uuid) string {
 	return fmt.Sprintf("%s:inventory_quantity:%s", storeId, id)
+}
+
+func sharedGet(ctx context.Context, storeId, sourceId xtypes.Uuid, inventory int64) error {
+	return nil
 }

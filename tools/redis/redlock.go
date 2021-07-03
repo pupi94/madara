@@ -6,15 +6,15 @@ var LockDefaultTTL = 60
 
 type Redlock struct {
 	pool *redis.Pool
-	Ttl  int
-	Key  string
+	ttl  int
+	key  string
 }
 
 func NewRedlock(client *Client, key string) *Redlock {
 	return &Redlock{
 		pool: client.Pool,
-		Ttl:  LockDefaultTTL,
-		Key:  key,
+		ttl:  LockDefaultTTL,
+		key:  key,
 	}
 }
 
@@ -22,14 +22,14 @@ func (rl *Redlock) Setnx() (bool, error) {
 	conn := rl.pool.Get()
 	defer conn.Close()
 
-	reply, err := conn.Do("SETNX", rl.Key, 1)
+	reply, err := conn.Do("SETNX", rl.key, 1)
 	if err != nil {
 		return false, err
 	}
 	if reply.(int64) != 1 {
 		return false, nil
 	}
-	_, err = conn.Do("EXPIRE", rl.Key, rl.Ttl)
+	_, err = conn.Do("EXPIRE", rl.key, rl.ttl)
 	if err != nil {
 		return false, err
 	}
@@ -40,6 +40,10 @@ func (rl *Redlock) Expire() error {
 	conn := rl.pool.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("DEL", rl.Key)
+	_, err := conn.Do("DEL", rl.key)
 	return err
+}
+
+func (rl *Redlock) SetTtl(t int) {
+	rl.ttl = t
 }
