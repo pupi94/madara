@@ -21,6 +21,13 @@ func (r *Response) Error() error {
 	return r.error
 }
 
+func (r *Response) Hit() bool {
+	if r.error != nil || r.reply == nil {
+		return false
+	}
+	return true
+}
+
 func (r *Response) Int64() (int64, error) {
 	return redis.Int64(r.reply, r.error)
 }

@@ -1,6 +1,10 @@
 package models
 
-import "github.com/pupi94/madara/components/xtypes"
+import (
+	"context"
+	"github.com/pupi94/madara/components/xtypes"
+	"gorm.io/gorm"
+)
 
 type Inventory struct {
 	ID        xtypes.Uuid     `db:"id" json:"id" faker:"uuid_hyphenated"`
@@ -12,4 +16,8 @@ type Inventory struct {
 
 func (Inventory) TableName() string {
 	return "inventories"
+}
+
+func GetProductInventory(ctx context.Context, db *gorm.DB, productID xtypes.Uuid) (int64, error) {
+	return 0, nil
 }
