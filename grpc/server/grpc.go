@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/pupi94/madara/grpc/controller"
+	"github.com/pupi94/madara/controller/v1"
 	"github.com/pupi94/madara/grpc/interceptor"
-	"github.com/pupi94/madara/grpc/pb"
+	pb_v1 "github.com/pupi94/madara/grpc/pb/v1"
 	"google.golang.org/grpc"
 	"net"
 )
@@ -33,7 +33,7 @@ func (rp *GrpcServer) Start(port int) error {
 }
 
 func (rp *GrpcServer) registerService() {
-	pb.RegisterProductControllerServer(rp.server, controller.NewProductController())
+	pb_v1.RegisterProductControllerServer(rp.server, v1.NewProductController())
 }
 
 func (rp *GrpcServer) Shutdown(ctx context.Context) (err error) {
