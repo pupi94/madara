@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/Masterminds/squirrel v1.5.0
 	github.com/Shopify/sarama v1.27.2
-	github.com/aws/aws-sdk-go v1.38.17 // indirect
+	github.com/aws/aws-sdk-go v1.38.17
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/caarlos0/env/v6 v6.4.0
 	github.com/go-redis/redis/v8 v8.7.1 // indirect

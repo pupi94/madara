@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"github.com/pupi94/madara/tools/memcache"
-	"github.com/pupi94/madara/tools/redis"
+	"github.com/pupi94/madara/component/memcache"
+	"github.com/pupi94/madara/component/redis"
 	"time"
 )
 

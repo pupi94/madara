@@ -1,4 +1,4 @@
-package xtypes
+package xtype
 
 import (
 	"database/sql/driver"

@@ -3,9 +3,9 @@ package cmd
 import (
 	"context"
 	"github.com/Shopify/sarama"
+	"github.com/pupi94/madara/component/kafka"
 	"github.com/pupi94/madara/config"
 	"github.com/pupi94/madara/kafka/consumers"
-	"github.com/pupi94/madara/tools/kafka"
 )
 
 var GroupId = "madara"
