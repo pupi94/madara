@@ -20,7 +20,7 @@ func main() {
 				Usage: "Start grpc service",
 				Action: func(c *cli.Context) error {
 					config.InitDB()
-					config.InitKafkaProducer(ctx)
+					//config.InitKafkaProducer(ctx)
 					return cmd.StartGrpcServer(ctx)
 				},
 			},

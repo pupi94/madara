@@ -11,11 +11,11 @@ type Product struct {
 	StoreID           xtype.Uuid     `db:"store_id" json:"store_id" faker:"uuid_hyphenated"`
 	Title             *string        `db:"title" json:"title" faker:"word"`
 	Description       *string        `db:"description" json:"description" faker:"sentence"`
+	Published         *bool          `db:"published" json:"published" faker:"false"`
 	PublishedAt       *xtype.UtcTime `db:"published_at" json:"published_at" faker:"-"`
 	InventoryQuantity *int64         `db:"inventory_quantity" json:"inventory_quantity" faker:"-"`
 	CreatedAt         *xtype.UtcTime `db:"created_at" json:"created_at" faker:"-"`
 	UpdatedAt         *xtype.UtcTime `db:"updated_at" json:"updated_at" faker:"-"`
-	Published         *bool          `db:"published" json:"published" faker:"false"`
 }
 
 func (p Product) TableName() string {
