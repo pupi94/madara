@@ -1,22 +1,31 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/pupi94/madara/config"
-	"github.com/pupi94/madara/model"
+	v1 "github.com/pupi94/madara/grpc/pb/v1"
+	"google.golang.org/grpc"
 )
 
 func main() {
-	config.InitDB()
+	CreateProduct()
+}
 
-	p := model.Product{Title: "test", Description: "212", StoreID: 1212}
+func CreateProduct() {
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithInsecure())
+	opts = append(opts, grpc.WithBlock())
 
-	fmt.Println(p.ID)
-
-	db := config.DB
-	res := db.Create(&p)
-	if res.Error != nil {
-		panic(res.Error)
+	conn, err := grpc.Dial("127.0.0.1:3000", opts...)
+	if err != nil {
+		panic(err)
 	}
-	fmt.Println(p.ID)
+	defer conn.Close()
+
+	client := v1.NewProductControllerClient(conn)
+	resp, err := client.CreateProduct(context.Background(), &v1.CreateProductRequest{})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("success = ", resp)
 }

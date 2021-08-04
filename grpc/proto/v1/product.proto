@@ -2,7 +2,7 @@ syntax = "proto3";
 package v1;
 
 import "google/protobuf/wrappers.proto";
-import "common.proto";
+import "v1/common.proto";
 
 option go_package = ".;v1";
 

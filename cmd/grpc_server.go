@@ -15,6 +15,8 @@ func StartGrpcServer(ctx context.Context) error {
 		return err
 	}
 
+	logrus.Info("rpc service start...")
+
 	select {
 	case <-ctx.Done():
 	}

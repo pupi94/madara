@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package v1;
 
-import "product.proto";
+import "v1/product.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = ".;v1";
