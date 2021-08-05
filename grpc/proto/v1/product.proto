@@ -6,76 +6,46 @@ import "v1/common.proto";
 
 option go_package = ".;v1";
 
-message Option {
-  // @inject_tag: binding:"required,option_name"
-  string name = 1;
-  // @inject_tag: binding:"required,option_values"
-  repeated string values = 2;
-}
-
 message Image {
-  string src = 1;
-  string alt = 2;
-  int32 width = 3;
-  int32 height = 4;
+  string id = 1;
+  string src = 2;
+  string alt = 3;
+  int32 width = 4;
+  int32 height = 5;
 }
 
 // 创建商品
 message CreateProductRequest {
-  // @inject_tag: binding:"required,product_title"
   string title = 1;
-  string description = 3;
-  bool published = 4;
-  StringList tags = 7;
-  // @inject_tag: binding:"product_spu"
-  string spu = 20;
-  // @inject_tag: binding:"product_fake_sales"
-
-  repeated Option options = 24;
-  repeated Image images = 25;
+  string description = 2;
+  bool published = 3;
+  repeated Image images = 4;
 
   message variant {
-    string option1 = 1;
-    string option2 = 2;
-    string option3 = 3;
-    // @inject_tag: binding:"variant_price"
-    double price = 4;
-    // @inject_tag: binding:"variant_inventory_quantity"
-    int64 inventory_quantity = 5;
+    double price = 1;
+    double compare_at_price = 2;
+    string barcode = 3;
+    int64 inventory_quantity = 4;
   }
-  // @inject_tag: binding:"dive"
-  repeated variant variants = 26;
+  repeated variant variants = 5;
 }
 
 // 更新商品
 message UpdateProductRequest {
-  // @inject_tag: binding:"required"
   string id = 1;
-  // @inject_tag: binding:"omitempty,product_title"
   google.protobuf.StringValue title = 2;
   google.protobuf.StringValue description = 3;
   google.protobuf.BoolValue published = 4;
-  StringList tags = 5;
-  // @inject_tag: binding:"omitempty,product_spu"
-  google.protobuf.StringValue spu = 6;
-  repeated Option options = 7;
 
-  // @inject_tag: binding:"dive"
-  repeated Image images = 8;
-
+  repeated Image images = 5;
   message variant {
-    // @inject_tag: binding:"omitempty,uuid"
     google.protobuf.StringValue id = 1;
-    google.protobuf.StringValue option1 = 2;
-    google.protobuf.StringValue option2 = 3;
-    google.protobuf.StringValue option3 = 4;
-    // @inject_tag: binding:"omitempty,variant_price"
-    google.protobuf.DoubleValue price = 5;
-    // @inject_tag: binding:"omitempty,variant_inventory_quantity"
-    google.protobuf.Int64Value inventory_quantity = 6;
-}
-  // @inject_tag: binding:"dive"
-  repeated variant variants = 9;
+    google.protobuf.StringValue barcode = 2;
+    google.protobuf.DoubleValue price = 3;
+    google.protobuf.DoubleValue compare_at_price = 4;
+    google.protobuf.Int64Value inventory_quantity = 5;
+  }
+  repeated variant variants = 6;
 }
 
 message DeleteProductRequest {
@@ -87,28 +57,23 @@ message ProductResponse {
   string title = 2;
   string description = 4;
   string published_at = 5;
-  repeated string tags = 8;
-  double price_min = 14;
-  double price_max = 15;
-  string spu = 23;
-  string created_at = 25;
-  string updated_at = 26;
-  bool published = 28;
-  repeated Option options = 33;
-  repeated Image images = 34;
+  int64 inventory_quantity = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  bool published = 9;
+  repeated Image images = 10;
 
   message variant {
     string id = 1;
     string product_id = 2;
-    int64 position = 5;
-    string option1 = 6;
-    string option2 = 7;
-    string option3 = 8;
-    double price = 14;
-    string created_at = 17;
-    string updated_at = 18;
+    int64 position = 3;
+    double price = 4;
+    double compare_at_price = 5;
+    int64 inventory_quantity = 6;
+    string created_at = 7;
+    string updated_at = 8;
   }
-  repeated variant variants = 35;
+  repeated variant variants = 11;
 }
 
 message GetProductRequest {
