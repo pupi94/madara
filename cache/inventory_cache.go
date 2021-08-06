@@ -138,7 +138,7 @@ func (ic *InventoryCache) batchBackfill(ctx context.Context, storeId xtype.Uuid,
 		return result, err
 	}
 	for _, inv := range inventories {
-		result[inv.ProductID] = aws.Int64Value(inv.Value)
+		result[inv.SourceID] = aws.Int64Value(inv.Value)
 	}
 
 	if err := ic.BatchSave(ctx, storeId, result); err != nil {
